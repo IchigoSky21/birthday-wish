@@ -208,6 +208,7 @@
   .pull-btn { font-family: 'Fredoka', sans-serif; font-weight: 600; font-size: 0.95rem; color: var(--ink); background: var(--marigold); border: none; padding: 13px 26px; border-radius: 999px; cursor: pointer; box-shadow: 0 6px 0 rgba(0,0,0,0.2); transition: transform 0.12s ease; margin-top: 20px; }
   .pull-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 rgba(0,0,0,0.2); }
   .pull-btn:disabled { opacity: 0.8; background: var(--teal); color: var(--cream); cursor: default; }
+  /* ---------- Note with gentle animation ---------- */
   .note {
     position: relative;
     background: var(--cream);
@@ -223,13 +224,47 @@
     max-height: 0;
     opacity: 0;
     overflow: hidden;
-    transition: max-height 1s ease, opacity 0.8s ease, transform 0.8s ease;
+    transition: max-height 1s ease, opacity 0.8s ease, transform 0.8s ease, box-shadow 0.8s ease;
   }
-  .note.revealed { max-height: 1000px; opacity: 1; transform: rotate(-1.4deg) translateY(0); margin-bottom: 40px; }
+  .note.revealed {
+    max-height: 1000px;
+    opacity: 1;
+    margin-bottom: 40px;
+    animation: noteFloat 5s ease-in-out infinite, noteGlow 4s ease-in-out infinite;
+  }
+  @keyframes noteFloat {
+    0%, 100% { transform: rotate(-1.4deg) translateY(0); }
+    50%      { transform: rotate(-0.6deg) translateY(-6px); }
+  }
+  @keyframes noteGlow {
+    0%, 100% { box-shadow: 0 16px 30px rgba(0,0,0,0.3), 0 0 0 0 rgba(255,182,39,0); }
+    50%      { box-shadow: 0 20px 38px rgba(0,0,0,0.25), 0 0 18px 2px rgba(255,182,39,0.15); }
+  }
   .tape { position: absolute; top: -16px; left: 50%; transform: translateX(-50%) rotate(-3deg); width: 90px; height: 30px; background: rgba(255,178,39,0.55); border: 1px solid rgba(255,178,39,0.7); }
   .note p { margin: 0 0 12px; line-height: 1.6; font-size: 1rem; }
   .note .signoff { font-family: 'Fredoka', sans-serif; font-weight: 600; color: var(--poppy); text-align: center; margin-top: 16px; }
-  .music-note { font-size: 0.75rem; color: rgba(255,246,229,0.6); margin: 18px 0 30px; cursor: pointer; text-align: center; }
+  /* ---------- Music Toggle Button ---------- */
+  .music-toggle {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,246,229,0.25);
+    background: rgba(255,246,229,0.08);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    margin: 22px 0 30px;
+    transition: background 0.3s ease, border-color 0.3s ease, transform 0.15s ease;
+    backdrop-filter: blur(4px);
+  }
+  .music-toggle:hover {
+    background: rgba(255,182,39,0.18);
+    border-color: var(--marigold);
+    transform: scale(1.1);
+  }
+  .music-toggle:active { transform: scale(0.95); }
+  .music-toggle svg { width: 22px; height: 22px; fill: var(--cream); opacity: 0.7; transition: opacity 0.3s ease; }
+  .music-toggle:hover svg { opacity: 1; }
+  .music-toggle.playing { border-color: var(--marigold); background: rgba(255,182,39,0.15); }
+  .music-toggle.playing svg { opacity: 1; }
   .confetti-piece { position: fixed; top: -20px; z-index: 10; pointer-events: none; animation: confettiFall linear forwards; }
   @keyframes confettiFall { to { transform: translateY(105vh) rotate(540deg); opacity: 0; } }
 </style>
@@ -265,9 +300,12 @@
             <p>As you reach this "key age," I wish you abundant health, endless opportunities, and may your plans and dreams unfold smoothly. May your heart and mind always be at peace and full of gratitude, no matter what happens.</p>
             <p>Turning 21 often feels like a turning point where everything starts to feel real (maybe :v) anyway, may you embrace it with confidence, surrounded by people who love you, and always remain the warm, wonderful Gracie we know.</p>
             <p>I hope every day is filled with amazing things for you! #HBD #KICAU</p>
-            <p class="signoff">Happy birthday, Gracie! 🔑💛</p>
+            <p class="signoff">Happy birthday, Gracie! 🎂💛</p>
           </div>
-          <p class="music-note" id="musicNote">🎵 Monokrom — Tulus (Click to play/pause)</p>
+          <button class="music-toggle" id="musicToggle" aria-label="Play or pause music" title="Monokrom — Tulus">
+            <svg id="iconPlay" viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21"/></svg>
+            <svg id="iconPause" viewBox="0 0 24 24" style="display:none"><rect x="5" y="3" width="4" height="18" rx="1"/><rect x="15" y="3" width="4" height="18" rx="1"/></svg>
+          </button>
         </div>
       </div>
     </div>
@@ -308,19 +346,34 @@
   }
   // ---------- Music Handling ----------
   const bgMusic = document.getElementById('bgMusic');
-  const musicNote = document.getElementById('musicNote');
-  
-  musicNote.addEventListener('click', () => {
+  const musicToggle = document.getElementById('musicToggle');
+  const iconPlay = document.getElementById('iconPlay');
+  const iconPause = document.getElementById('iconPause');
+  function updateMusicIcon() {
+    if (bgMusic.paused) {
+      iconPlay.style.display = '';
+      iconPause.style.display = 'none';
+      musicToggle.classList.remove('playing');
+    } else {
+      iconPlay.style.display = 'none';
+      iconPause.style.display = '';
+      musicToggle.classList.add('playing');
+    }
+  }
+  musicToggle.addEventListener('click', () => {
     if (bgMusic.paused) {
       bgMusic.volume = 0.6;
       bgMusic.play().catch(e => console.log("User interaction needed for audio"));
     } else {
       bgMusic.pause();
     }
+    updateMusicIcon();
   });
+  bgMusic.addEventListener('play', updateMusicIcon);
+  bgMusic.addEventListener('pause', updateMusicIcon);
   function tryPlayMusic() {
     bgMusic.volume = 0.6;
-    bgMusic.play().catch(e => console.log("User interaction needed for audio"));
+    bgMusic.play().then(() => updateMusicIcon()).catch(e => console.log("User interaction needed for audio"));
   }
   // ---------- Scene 1 -> Scene 2 ----------
   const sceneDoor = document.getElementById('scene-door');
