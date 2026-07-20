@@ -147,32 +147,25 @@
   /* ---------- Key: horizontal, right side ---------- */
   .key {
     position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -60%) rotate(-18deg);
     top: 50%;
     right: -80px;
     transform: translateY(-50%) rotate(90deg);
     cursor: pointer;
     z-index: 4;
     animation: keyBob 2.2s ease-in-out infinite;
-    transition: transform 0.55s cubic-bezier(.6,-0.2,.3,1.4), opacity 0.3s ease 0.4s;
     transition: right 0.6s cubic-bezier(.4,0,.2,1), opacity 0.3s ease 0.5s, filter 0.3s ease;
     filter: drop-shadow(0 0 5px rgba(255, 182, 39, 0));
   }
-  .key:hover { filter: drop-shadow(0 0 10px rgba(255, 182, 39, 0.8)); animation-play-state: paused; }
   .key:hover {
     filter: drop-shadow(0 0 10px rgba(255, 182, 39, 0.8));
     animation-play-state: paused;
   }
   @keyframes keyBob {
-    0%, 100% { transform: translate(-50%, -60%) rotate(-18deg) translateY(0); }
-    50%      { transform: translate(-50%, -60%) rotate(-10deg) translateY(-8px); }
     0%, 100% { transform: translateY(-50%) rotate(90deg) translateX(0); }
     50%      { transform: translateY(-50%) rotate(90deg) translateX(8px); }
   }
   .key svg { width: 62px; height: 62px; filter: drop-shadow(0 6px 8px rgba(0,0,0,0.35)); }
   .door-frame.open .key {
-    transform: translate(-50%, -60%) translateY(96px) rotate(90deg) scale(0.7);
     right: calc(50% - 31px);
     opacity: 0;
     animation: none;
@@ -292,7 +285,6 @@
         <p class="eyebrow">HAPPY 21ST BIRTHDAY</p>
         <h1 class="headline">Gracie has the<br/><em>key</em> now 🔑</h1>
         <div class="door-frame" id="doorFrame">
-          <div class="key" id="keyBtn"><svg viewBox="0 0 64 64"><circle cx="18" cy="18" r="13" fill="none" stroke="#D9A441" stroke-width="7"/><rect x="16" y="28" width="6" height="30" fill="#D9A441"/><rect x="16" y="46" width="14" height="6" fill="#D9A441"/><rect x="16" y="54" width="10" height="5" fill="#D9A441"/></svg></div>
           <div class="door-panel door-left"></div>
           <div class="door-panel door-right"></div>
           <div class="keyhole"></div>
@@ -315,7 +307,6 @@
             <p>As you reach this "key age," I wish you abundant health, endless opportunities, and may your plans and dreams unfold smoothly. May your heart and mind always be at peace and full of gratitude, no matter what happens.</p>
             <p>Turning 21 often feels like a turning point where everything starts to feel real (maybe :v) anyway, may you embrace it with confidence, surrounded by people who love you, and always remain the warm, wonderful Gracie we know.</p>
             <p>I hope every day is filled with amazing things for you! #HBD #KICAU</p>
-            <p class="signoff">Happy birthday, Gracie! 🔑💛</p>
             <p class="signoff">Happy birthday, Gracie! 🎂💛</p>
           </div>
           <button class="music-toggle" id="musicToggle" aria-label="Play or pause music" title="Monokrom — Tulus">
@@ -388,7 +379,6 @@
   bgMusic.addEventListener('play', updateMusicIcon);
   bgMusic.addEventListener('pause', updateMusicIcon);
   function tryPlayMusic() {
-    bgMusic.volume = 0.6;
     bgMusic.volume = 0.3;
     bgMusic.play().then(() => updateMusicIcon()).catch(e => console.log("User interaction needed for audio"));
   }
