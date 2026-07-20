@@ -372,7 +372,7 @@
   bgMusic.addEventListener('play', updateMusicIcon);
   bgMusic.addEventListener('pause', updateMusicIcon);
   function tryPlayMusic() {
-    bgMusic.volume = 0.6;
+    bgMusic.volume = 0.3;
     bgMusic.play().then(() => updateMusicIcon()).catch(e => console.log("User interaction needed for audio"));
   }
   // ---------- Scene 1 -> Scene 2 ----------
