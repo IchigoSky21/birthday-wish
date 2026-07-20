@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Gracie — Usia Kunci 🔑</title>
+<title>Gracie — The Key Age 🔑</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
@@ -22,24 +22,32 @@
   * { box-sizing: border-box; }
   html, body {
     margin: 0; padding: 0; width: 100%; height: 100%;
-    overflow: hidden;
     font-family: 'Karla', sans-serif;
     background: var(--teal-deep);
     color: var(--cream);
   }
 
+  .wrapper {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      overflow-x: hidden;
+      overflow-y: auto;
+  }
+
   .stage {
     position: relative;
-    width: 100%; height: 100vh;
+    width: 100%;
+    min-height: 100vh;
     display: flex; align-items: center; justify-content: center;
     background:
       repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 46px),
       radial-gradient(ellipse at 50% 42%, var(--teal) 0%, var(--teal-deep) 62%);
+    background-attachment: fixed;
+    padding: 20px 0;
   }
 
-  /* sunburst rays behind the door */
   .rays {
-    position: absolute;
+    position: fixed;
     top: 50%; left: 50%;
     width: 1400px; height: 1400px;
     transform: translate(-50%, -50%);
@@ -49,15 +57,16 @@
     );
     opacity: 0.16;
     animation: spin 90s linear infinite;
+    pointer-events: none;
   }
   @keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
 
-  /* drifting keys instead of balloons */
   .drift-key {
-    position: absolute;
+    position: fixed;
     font-size: 20px;
     opacity: 0.35;
     animation: drift linear infinite;
+    pointer-events: none;
   }
   @keyframes drift {
     0%   { transform: translateY(0) rotate(-8deg); }
@@ -65,10 +74,10 @@
     100% { transform: translateY(0) rotate(-8deg); }
   }
 
-  /* ---------- Scene 1: door ---------- */
   #scene-door {
     position: relative; z-index: 2; text-align: center;
     transition: opacity 0.6s ease, transform 0.6s ease;
+    width: 100%;
   }
   #scene-door.hidden { opacity: 0; transform: scale(0.9); pointer-events: none; }
 
@@ -88,10 +97,7 @@
     line-height: 1.08;
     color: var(--cream);
   }
-  .headline em {
-    font-style: normal;
-    color: var(--marigold);
-  }
+  .headline em { font-style: normal; color: var(--marigold); }
 
   .door-frame {
     position: relative;
@@ -139,356 +145,172 @@
 
   .key {
     position: absolute;
-    top: -76px; left: 50%;
-    transform: translateX(-50%) rotate(-18deg);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -60%) rotate(-18deg);
     cursor: pointer;
     z-index: 4;
     animation: keyBob 2.2s ease-in-out infinite;
     transition: transform 0.55s cubic-bezier(.6,-0.2,.3,1.4), opacity 0.3s ease 0.4s;
+    filter: drop-shadow(0 0 5px rgba(255, 182, 39, 0));
   }
+  .key:hover { filter: drop-shadow(0 0 10px rgba(255, 182, 39, 0.8)); animation-play-state: paused; }
   @keyframes keyBob {
-    0%, 100% { transform: translateX(-50%) rotate(-18deg) translateY(0); }
-    50%      { transform: translateX(-50%) rotate(-10deg) translateY(-8px); }
+    0%, 100% { transform: translate(-50%, -60%) rotate(-18deg) translateY(0); }
+    50%      { transform: translate(-50%, -60%) rotate(-10deg) translateY(-8px); }
   }
   .key svg { width: 62px; height: 62px; filter: drop-shadow(0 6px 8px rgba(0,0,0,0.35)); }
   .door-frame.open .key {
-    transform: translateX(-50%) translateY(96px) rotate(90deg) scale(0.7);
+    transform: translate(-50%, -60%) translateY(96px) rotate(90deg) scale(0.7);
     opacity: 0;
   }
 
-  .hint {
-    margin-top: 20px;
-    font-size: 0.85rem;
-    color: var(--brass-light);
-  }
-  #scene-door.hidden .hint { opacity: 0; }
+  .hint { margin-top: 20px; font-size: 0.85rem; color: var(--brass-light); }
 
-  /* ---------- Scene 2: badge + message ---------- */
   #scene-badge {
-    position: absolute; inset: 0; z-index: 3;
-    display: flex; align-items: center; justify-content: center;
-    opacity: 0; pointer-events: none;
+    position: relative; z-index: 3;
+    display: none;
+    align-items: center; justify-content: center;
+    opacity: 0;
     transition: opacity 0.7s ease;
     padding: 24px;
-    overflow-y: auto;
-  }
-  #scene-badge.visible { opacity: 1; pointer-events: auto; }
-
-  .badge-col {
-    text-align: center;
-    max-width: 460px;
     width: 100%;
   }
+  #scene-badge.visible { display: flex; animation: fadeInBadge 0.7s ease forwards; }
+  @keyframes fadeInBadge { to { opacity: 1; } }
 
-  .badge-eyebrow {
-    font-family: 'Fredoka', sans-serif;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    color: var(--marigold);
-    font-size: 0.85rem;
-    margin: 0 0 4px;
-  }
-  .badge-title {
-    font-family: 'Fredoka', sans-serif;
-    font-weight: 700;
-    font-size: clamp(1.5rem, 4.6vw, 2.1rem);
-    margin: 0 0 22px;
-    color: var(--cream);
-  }
+  .badge-col { text-align: center; max-width: 460px; width: 100%; }
+  .badge-eyebrow { font-family: 'Fredoka', sans-serif; font-weight: 600; letter-spacing: 0.12em; color: var(--marigold); font-size: 0.85rem; margin: 0 0 4px; }
+  .badge-title { font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: clamp(1.5rem, 4.6vw, 2.1rem); margin: 0 0 22px; color: var(--cream); }
 
   .medal {
-    position: relative;
-    width: 168px; height: 168px;
-    margin: 0 auto 8px;
-    border-radius: 50%;
+    position: relative; width: 168px; height: 168px; margin: 0 auto 8px; border-radius: 50%;
     background: radial-gradient(circle at 35% 30%, var(--brass-light), var(--brass) 65%, #B9822F 100%);
     box-shadow: 0 10px 24px rgba(0,0,0,0.35), inset 0 0 0 6px rgba(255,255,255,0.15);
     display: flex; align-items: center; justify-content: center;
   }
-  .medal-inner {
-    width: 128px; height: 128px;
-    border-radius: 50%;
-    background: var(--poppy);
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: inset 0 4px 10px rgba(0,0,0,0.25);
-  }
-  .medal-num {
-    font-family: 'Fredoka', sans-serif;
-    font-weight: 700;
-    font-size: 3rem;
-    color: var(--cream);
-    text-shadow: 0 3px 0 rgba(0,0,0,0.2);
-  }
-  .medal-ribbon {
-    position: absolute;
-    top: 148px; left: 50%;
-    transform: translateX(-50%);
-    display: flex; gap: 6px;
-  }
-  .ribbon-tail {
-    width: 26px; height: 60px;
-    background: var(--teal);
-    clip-path: polygon(0 0, 100% 0, 100% 78%, 50% 100%, 0 78%);
-  }
-  .ribbon-tail.left  { transform: rotate(-8deg); background: var(--teal); }
-  .ribbon-tail.right { transform: rotate(8deg); background: #0B5F5E; }
+  .medal-inner { width: 128px; height: 128px; border-radius: 50%; background: var(--poppy); display: flex; align-items: center; justify-content: center; box-shadow: inset 0 4px 10px rgba(0,0,0,0.25); }
+  .medal-num { font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 3rem; color: var(--cream); }
 
-  .flags {
-    display: flex; flex-wrap: wrap;
-    justify-content: center;
-    gap: 4px;
-    max-width: 320px;
-    margin: 84px auto 26px;
-    position: relative;
-  }
-  .flags::before {
-    content: "";
-    position: absolute;
-    top: -8px; left: 0; right: 0;
-    height: 1px;
-    background: rgba(255,246,229,0.25);
-  }
-  .flag {
-    width: 12px; height: 14px;
-    background: #4a3350;
-    clip-path: polygon(0 0, 100% 0, 50% 100%);
-    transition: background 0.35s ease, transform 0.35s ease;
-  }
-  .flag.lit { transform: translateY(2px); }
+  .flags { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; max-width: 320px; margin: 84px auto 26px; position: relative; min-height: 16px; }
+  .flag { width: 12px; height: 14px; background: #4a3350; clip-path: polygon(0 0, 100% 0, 50% 100%); transition: background 0.35s ease, transform 0.35s ease; }
+  .flag.lit { transform: translateY(2px); filter: drop-shadow(0 2px 4px rgba(255,255,255,0.4)); }
 
-  .pull-btn {
-    font-family: 'Fredoka', sans-serif;
-    font-weight: 600;
-    font-size: 0.95rem;
-    color: var(--ink);
-    background: var(--marigold);
-    border: none;
-    padding: 13px 26px;
-    border-radius: 999px;
-    cursor: pointer;
-    box-shadow: 0 6px 0 rgba(0,0,0,0.2);
-    transition: transform 0.12s ease;
-  }
+  .pull-btn { font-family: 'Fredoka', sans-serif; font-weight: 600; font-size: 0.95rem; color: var(--ink); background: var(--marigold); border: none; padding: 13px 26px; border-radius: 999px; cursor: pointer; box-shadow: 0 6px 0 rgba(0,0,0,0.2); transition: transform 0.12s ease; margin-top: 20px; }
   .pull-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 rgba(0,0,0,0.2); }
-  .pull-btn:disabled { opacity: 0.55; cursor: default; }
+  .pull-btn:disabled { opacity: 0.8; background: var(--teal); color: var(--cream); cursor: default; }
 
-  .note {
-    position: relative;
-    background: var(--cream);
-    color: var(--ink);
-    text-align: left;
-    padding: 30px 26px 24px;
-    margin: 30px auto 0;
-    max-width: 420px;
-    border-radius: 3px 14px 14px 14px;
-    transform: rotate(-1.4deg);
-    box-shadow: 0 16px 30px rgba(0,0,0,0.3);
-    max-height: 0;
-    opacity: 0;
-    overflow: hidden;
-    transition: max-height 0.8s ease, opacity 0.8s ease, margin 0.8s ease;
-  }
-  .note.revealed { max-height: 600px; opacity: 1; }
-
-  .tape {
-    position: absolute;
-    top: -16px; left: 50%;
-    transform: translateX(-50%) rotate(-3deg);
-    width: 90px; height: 30px;
-    background: rgba(255,178,39,0.55);
-    border: 1px solid rgba(255,178,39,0.7);
-  }
-
+  .note { position: relative; background: var(--cream); color: var(--ink); text-align: left; padding: 30px 26px 24px; margin: 30px auto 0; max-width: 420px; border-radius: 3px 14px 14px 14px; transform: rotate(-1.4deg); box-shadow: 0 16px 30px rgba(0,0,0,0.3); max-height: 0; opacity: 0; overflow: hidden; transition: max-height 1s ease, opacity 0.8s ease, transform 0.8s ease; }
+  .note.revealed { max-height: 1000px; opacity: 1; transform: rotate(-1.4deg) translateY(0); margin-bottom: 40px; }
+  .tape { position: absolute; top: -16px; left: 50%; transform: translateX(-50%) rotate(-3deg); width: 90px; height: 30px; background: rgba(255,178,39,0.55); border: 1px solid rgba(255,178,39,0.7); }
   .note p { margin: 0 0 12px; line-height: 1.6; font-size: 1rem; }
-  .note .signoff {
-    font-family: 'Fredoka', sans-serif;
-    font-weight: 600;
-    color: var(--poppy);
-    text-align: center;
-    margin-top: 16px;
-  }
+  .note .signoff { font-family: 'Fredoka', sans-serif; font-weight: 600; color: var(--poppy); text-align: center; margin-top: 16px; }
 
-  .music-note {
-    font-size: 0.75rem;
-    color: rgba(255,246,229,0.6);
-    margin-top: 18px;
-  }
-
-  .confetti-piece {
-    position: fixed; top: -20px; z-index: 10;
-    pointer-events: none;
-    animation: confettiFall linear forwards;
-  }
-  @keyframes confettiFall {
-    0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
-    100% { transform: translateY(105vh) rotate(540deg); opacity: 0.9; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .rays, .drift-key, .key { animation: none !important; }
-  }
+  .music-note { font-size: 0.75rem; color: rgba(255,246,229,0.6); margin: 18px 0 30px; cursor: pointer; }
+  .confetti-piece { position: fixed; top: -20px; z-index: 10; pointer-events: none; animation: confettiFall linear forwards; }
+  @keyframes confettiFall { to { transform: translateY(105vh) rotate(540deg); opacity: 0; } }
 </style>
 </head>
 <body>
 
-<div class="stage">
-  <div class="rays"></div>
-  <div id="driftKeys"></div>
+<div class="wrapper">
+    <div class="stage">
+      <div class="rays"></div>
+      <div id="driftKeys"></div>
 
-  <!-- Scene 1: door + key -->
-  <div id="scene-door">
-    <p class="eyebrow">SELAMAT ULANG TAHUN KE-21</p>
-    <h1 class="headline">Gracie resmi<br/>pegang <em>kunci</em> 🔑</h1>
+      <div id="scene-door">
+        <p class="eyebrow">HAPPY 21ST BIRTHDAY</p>
+        <h1 class="headline">Gracie has the<br/><em>key</em> now 🔑</h1>
 
-    <div class="door-frame" id="doorFrame">
-      <div class="key" id="keyBtn">
-        <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="18" cy="18" r="13" fill="none" stroke="#D9A441" stroke-width="7"/>
-          <rect x="16" y="28" width="6" height="30" fill="#D9A441"/>
-          <rect x="16" y="46" width="14" height="6" fill="#D9A441"/>
-          <rect x="16" y="54" width="10" height="5" fill="#D9A441"/>
-        </svg>
+        <div class="door-frame" id="doorFrame">
+          <div class="key" id="keyBtn"><svg viewBox="0 0 64 64"><circle cx="18" cy="18" r="13" fill="none" stroke="#D9A441" stroke-width="7"/><rect x="16" y="28" width="6" height="30" fill="#D9A441"/><rect x="16" y="46" width="14" height="6" fill="#D9A441"/><rect x="16" y="54" width="10" height="5" fill="#D9A441"/></svg></div>
+          <div class="door-panel door-left"></div>
+          <div class="door-panel door-right"></div>
+          <div class="keyhole"></div>
+        </div>
+        <p class="hint">Click the key to unlock ✨</p>
       </div>
-      <div class="door-panel door-left"></div>
-      <div class="door-panel door-right"></div>
-      <div class="keyhole"></div>
-    </div>
 
-    <p class="hint">klik kuncinya buat buka pintunya ✨</p>
-  </div>
+      <div id="scene-badge">
+        <div class="badge-col">
+          <p class="badge-eyebrow">THE KEY AGE</p>
+          <h2 class="badge-title">For Gracie 💛</h2>
 
-  <!-- Scene 2: medal + message -->
-  <div id="scene-badge">
-    <div class="badge-col">
-      <p class="badge-eyebrow">USIA KUNCI</p>
-      <h2 class="badge-title">Untuk Gracie 💛</h2>
+          <div class="medal">
+            <div class="medal-inner"><span class="medal-num">21</span></div>
+          </div>
 
-      <div class="medal">
-        <div class="medal-inner"><span class="medal-num">21</span></div>
-        <div class="medal-ribbon">
-          <div class="ribbon-tail left"></div>
-          <div class="ribbon-tail right"></div>
+          <div class="flags" id="flags"></div>
+
+          <button class="pull-btn" id="pullBtn">Click for wishes and hopes 🎊</button>
+
+          <div class="note" id="note">
+            <div class="tape"></div>
+            <p>그레이시, 21번째 생일 축하해! 🎉</p>
+            <p>As you reach this "key age," I wish you abundant health, endless opportunities, and may your plans and dreams unfold smoothly. May your heart and mind always be at peace and full of gratitude, no matter what happens.</p>
+            <p>Turning 21 often feels like a turning point where everything starts to feel real (maybe :v) anyway, may you embrace it with confidence, surrounded by people who love you, and always remain the warm, wonderful Gracie we know.</p>
+            <p>I hope every day is filled with amazing things for you! #HBD #KICAU</p>
+            <p class="signoff">Happy birthday, Gracie! 🔑💛</p>
+          </div>
+
+          <p class="music-note" id="musicNote">🎵 Monokrom — Tulus (Click to play/pause)</p>
         </div>
       </div>
-
-      <div class="flags" id="flags"></div>
-
-      <button class="pull-btn" id="pullBtn">Tarik talinya & buat harapan 🎊</button>
-
-      <div class="note" id="note">
-        <div class="tape"></div>
-        <p>Selamat ulang tahun ke-21, Gracie! 🎉</p>
-        <p>Semoga di usia kunci ini kamu selalu diberi kesehatan, dilimpahkan rejeki, dan dimudahkan dalam setiap langkah serta rencana yang sedang kamu perjuangkan. Semoga Tuhan selalu menjaga hati dan pikiranmu supaya tetap tenang dan penuh syukur, apa pun yang terjadi.</p>
-        <p>Umur 21 sering jadi titik di mana banyak hal mulai terasa nyata — semoga kamu menjalaninya dengan percaya diri, dikelilingi orang-orang yang sayang sama kamu, dan tetap jadi Gracie yang hangat dan seru seperti biasanya.</p>
-        <p>Terima kasih sudah jadi bagian cerita yang menyenangkan. Semoga tahun ini penuh hal-hal baik buatmu ya!</p>
-        <p class="signoff">Selamat ulang tahun, Gracie! 🔑💛</p>
-      </div>
-
-      <p class="music-note" id="musicNote">🎵 Monokrom — Tulus</p>
     </div>
-  </div>
 </div>
 
-<audio id="bgMusic" src="monokrom.mp3" loop></audio>
+<audio id="bgMusic" loop src="monokrom.mp3"></audio>
 
 <script>
-  // ---------- Drifting decorative keys ----------
+  // Setup drifters
   const driftContainer = document.getElementById('driftKeys');
   for (let i = 0; i < 10; i++) {
     const k = document.createElement('div');
-    k.className = 'drift-key';
-    k.textContent = '🔑';
-    k.style.left = (Math.random() * 96) + 'vw';
-    k.style.top = (Math.random() * 90) + 'vh';
+    k.className = 'drift-key'; k.textContent = '🔑';
+    k.style.left = (Math.random() * 96) + 'vw'; k.style.top = (Math.random() * 90) + 'vh';
     k.style.animationDuration = (5 + Math.random() * 4) + 's';
-    k.style.animationDelay = (-Math.random() * 6) + 's';
-    k.style.fontSize = (14 + Math.random() * 14) + 'px';
     driftContainer.appendChild(k);
   }
 
-  // ---------- Confetti burst ----------
   function burstConfetti(count) {
-    const colors = ['#FFB627', '#FF5A36', '#0E7C7B', '#D9A441', '#FFF6E5'];
+    const colors = ['#FFB627', '#FF5A36', '#0E7C7B', '#D9A441'];
     for (let i = 0; i < count; i++) {
       const piece = document.createElement('div');
       piece.className = 'confetti-piece';
-      const size = 6 + Math.random() * 8;
-      piece.style.width = size + 'px';
-      piece.style.height = (size * 0.4) + 'px';
       piece.style.left = (Math.random() * 100) + 'vw';
       piece.style.background = colors[Math.floor(Math.random() * colors.length)];
       piece.style.animationDuration = (2.5 + Math.random() * 2) + 's';
-      piece.style.animationDelay = (Math.random() * 0.6) + 's';
       document.body.appendChild(piece);
-      setTimeout(() => piece.remove(), 5200);
+      setTimeout(() => piece.remove(), 5000);
     }
   }
 
-  // ---------- Music (best-effort, needs monokrom.mp3 next to this file) ----------
   const bgMusic = document.getElementById('bgMusic');
-  const musicNote = document.getElementById('musicNote');
-  function tryPlayMusic() {
-    bgMusic.volume = 0.6;
-    bgMusic.play().catch(() => {
-      musicNote.textContent = '🎵 Monokrom — Tulus (tambahkan file monokrom.mp3 di folder yang sama untuk memutar musik)';
-    });
-  }
-
-  // ---------- Scene 1 -> door opens ----------
-  const sceneDoor = document.getElementById('scene-door');
-  const sceneBadge = document.getElementById('scene-badge');
-  const doorFrame = document.getElementById('doorFrame');
-  const keyBtn = document.getElementById('keyBtn');
-  let opened = false;
-
-  keyBtn.addEventListener('click', () => {
-    if (opened) return;
-    opened = true;
-    doorFrame.classList.add('open');
-    setTimeout(() => {
-      burstConfetti(90);
-      sceneDoor.classList.add('hidden');
-    }, 500);
-    setTimeout(() => {
-      sceneBadge.classList.add('visible');
-    }, 850);
-    tryPlayMusic();
+  let isPlaying = false;
+  document.getElementById('musicNote').addEventListener('click', () => {
+    isPlaying ? bgMusic.pause() : bgMusic.play();
+    isPlaying = !isPlaying;
   });
 
-  // ---------- 21 flags ----------
+  const keyBtn = document.getElementById('keyBtn');
+  keyBtn.addEventListener('click', () => {
+    document.getElementById('doorFrame').classList.add('open');
+    setTimeout(() => { burstConfetti(90); document.getElementById('scene-door').classList.add('hidden'); }, 500);
+    setTimeout(() => { document.getElementById('scene-door').style.display = 'none'; document.getElementById('scene-badge').classList.add('visible'); }, 850);
+  });
+
   const flagsContainer = document.getElementById('flags');
-  const flagColors = ['#FFB627', '#FF5A36', '#0E7C7B'];
-  const FLAG_COUNT = 21;
-  for (let i = 0; i < FLAG_COUNT; i++) {
-    const flag = document.createElement('div');
-    flag.className = 'flag';
-    flag.dataset.color = flagColors[i % flagColors.length];
-    flagsContainer.appendChild(flag);
+  for (let i = 0; i < 21; i++) {
+    const f = document.createElement('div'); f.className = 'flag';
+    flagsContainer.appendChild(f);
   }
 
-  // ---------- Pull string -> light flags + reveal message ----------
-  const pullBtn = document.getElementById('pullBtn');
-  const noteEl = document.getElementById('note');
-  let pulled = false;
-
-  pullBtn.addEventListener('click', () => {
-    if (pulled) return;
-    pulled = true;
-    const flags = document.querySelectorAll('.flag');
-    flags.forEach((f, idx) => {
-      setTimeout(() => {
-        f.style.background = f.dataset.color;
-        f.classList.add('lit');
-      }, idx * 45);
-    });
+  document.getElementById('pullBtn').addEventListener('click', (e) => {
     burstConfetti(140);
-    pullBtn.disabled = true;
-    pullBtn.textContent = 'Harapanmu sudah terkirim ke langit ☁️';
-    setTimeout(() => {
-      noteEl.classList.add('revealed');
-    }, 700);
+    document.querySelectorAll('.flag').forEach((f, i) => setTimeout(() => f.classList.add('lit'), i * 45));
+    e.target.disabled = true;
+    e.target.textContent = 'Wishes sent to the sky ☁️';
+    setTimeout(() => document.getElementById('note').classList.add('revealed'), 700);
   });
 </script>
-
 </body>
 </html>
