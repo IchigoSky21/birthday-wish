@@ -253,9 +253,51 @@
   /* ---------- Music Toggle Button ---------- */
   .music-toggle {
     width: 48px; height: 48px;
+  /* ---------- Mini Music Player ---------- */
+  .mini-player {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(0,0,0,0.3);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,246,229,0.1);
+    border-radius: 16px;
+    padding: 10px 16px 10px 10px;
+    margin: 22px 0 30px;
+    max-width: 320px;
+    width: 100%;
+  }
+  /* Spinning vinyl disc */
+  .vinyl-wrap {
+    position: relative;
+    width: 52px; height: 52px;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+  .vinyl {
+    width: 52px; height: 52px;
     border-radius: 50%;
     border: 2px solid rgba(255,246,229,0.25);
     background: rgba(255,246,229,0.08);
+    background:
+      radial-gradient(circle at 50% 50%, var(--ink) 8px, transparent 8px),
+      radial-gradient(circle at 50% 50%, var(--brass-light) 10px, transparent 10px),
+      repeating-radial-gradient(circle at 50% 50%, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 4px),
+      conic-gradient(from 0deg, #1a1a2e, #2d2d44, #1a1a2e, #2d2d44, #1a1a2e);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.4), inset 0 0 0 2px rgba(255,255,255,0.08);
+    animation: vinylSpin 3s linear infinite;
+    animation-play-state: paused;
+  }
+  .vinyl.spinning { animation-play-state: running; }
+  @keyframes vinylSpin { to { transform: rotate(360deg); } }
+  /* Play/pause overlay on vinyl */
+  .vinyl-overlay {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(0,0,0,0);
+    transition: background 0.2s ease;
     cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     margin: 22px 0 30px;
@@ -266,12 +308,99 @@
     background: rgba(255,182,39,0.18);
     border-color: var(--marigold);
     transform: scale(1.1);
+  .vinyl-wrap:hover .vinyl-overlay { background: rgba(0,0,0,0.35); }
+  .vinyl-overlay svg {
+    width: 20px; height: 20px;
+    fill: var(--cream);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    filter: drop-shadow(0 1px 3px rgba(0,0,0,0.5));
   }
   .music-toggle:active { transform: scale(0.95); }
   .music-toggle svg { width: 22px; height: 22px; fill: var(--cream); opacity: 0.7; transition: opacity 0.3s ease; }
   .music-toggle:hover svg { opacity: 1; }
   .music-toggle.playing { border-color: var(--marigold); background: rgba(255,182,39,0.15); }
   .music-toggle.playing svg { opacity: 1; }
+  .vinyl-wrap:hover .vinyl-overlay svg { opacity: 1; }
+  /* Song info & progress */
+  .player-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .player-song {
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+    font-size: 0.82rem;
+    color: var(--cream);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2;
+  }
+  .player-artist {
+    font-size: 0.7rem;
+    color: rgba(255,246,229,0.5);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2;
+  }
+  .progress-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .progress-bar {
+    flex: 1;
+    height: 4px;
+    background: rgba(255,246,229,0.12);
+    border-radius: 2px;
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+  }
+  .progress-bar:hover { height: 6px; }
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--marigold), var(--poppy));
+    border-radius: 2px;
+    transition: width 0.3s linear;
+  }
+  .progress-time {
+    font-size: 0.6rem;
+    color: rgba(255,246,229,0.4);
+    font-variant-numeric: tabular-nums;
+    min-width: 28px;
+    text-align: right;
+  }
+  .progress-time.total { text-align: left; }
+  /* Equalizer bars animation */
+  .eq-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 14px;
+    margin-left: 2px;
+  }
+  .eq-bar {
+    width: 3px;
+    background: var(--marigold);
+    border-radius: 1px;
+    animation: eqBounce 0.8s ease-in-out infinite alternate;
+  }
+  .eq-bar:nth-child(1) { height: 6px; animation-delay: 0s; }
+  .eq-bar:nth-child(2) { height: 10px; animation-delay: 0.15s; }
+  .eq-bar:nth-child(3) { height: 4px; animation-delay: 0.3s; }
+  .eq-bar:nth-child(4) { height: 8px; animation-delay: 0.1s; }
+  .eq-bars.paused .eq-bar { animation-play-state: paused; }
+  @keyframes eqBounce {
+    0%   { height: 3px; }
+    100% { height: 14px; }
+  }
   .confetti-piece { position: fixed; top: -20px; z-index: 10; pointer-events: none; animation: confettiFall linear forwards; }
   @keyframes confettiFall { to { transform: translateY(105vh) rotate(540deg); opacity: 0; } }
 </style>
@@ -313,6 +442,36 @@
             <svg id="iconPlay" viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21"/></svg>
             <svg id="iconPause" viewBox="0 0 24 24" style="display:none"><rect x="5" y="3" width="4" height="18" rx="1"/><rect x="15" y="3" width="4" height="18" rx="1"/></svg>
           </button>
+          <div class="mini-player" id="miniPlayer">
+            <div class="vinyl-wrap" id="vinylWrap">
+              <div class="vinyl" id="vinyl"></div>
+              <div class="vinyl-overlay">
+                <svg id="iconPlay" viewBox="0 0 24 24"><polygon points="8,4 20,12 8,20"/></svg>
+                <svg id="iconPause" viewBox="0 0 24 24" style="display:none"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
+              </div>
+            </div>
+            <div class="player-info">
+              <div style="display:flex;align-items:center;gap:6px">
+                <div style="flex:1;min-width:0">
+                  <div class="player-song">Monokrom</div>
+                  <div class="player-artist">Tulus</div>
+                </div>
+                <div class="eq-bars paused" id="eqBars">
+                  <div class="eq-bar"></div>
+                  <div class="eq-bar"></div>
+                  <div class="eq-bar"></div>
+                  <div class="eq-bar"></div>
+                </div>
+              </div>
+              <div class="progress-row">
+                <span class="progress-time" id="timeCurrent">0:00</span>
+                <div class="progress-bar" id="progressBar">
+                  <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <span class="progress-time total" id="timeTotal">0:00</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -354,6 +513,8 @@
   // ---------- Music Handling ----------
   const bgMusic = document.getElementById('bgMusic');
   const musicToggle = document.getElementById('musicToggle');
+  const vinyl = document.getElementById('vinyl');
+  const vinylWrap = document.getElementById('vinylWrap');
   const iconPlay = document.getElementById('iconPlay');
   const iconPause = document.getElementById('iconPause');
   function updateMusicIcon() {
@@ -365,12 +526,51 @@
       iconPlay.style.display = 'none';
       iconPause.style.display = '';
       musicToggle.classList.add('playing');
+  const progressFill = document.getElementById('progressFill');
+  const progressBar = document.getElementById('progressBar');
+  const timeCurrent = document.getElementById('timeCurrent');
+  const timeTotal = document.getElementById('timeTotal');
+  const eqBars = document.getElementById('eqBars');
+  // ★ Set lagu mulai dari detik ke-30 (ubah angka ini sesuai keinginan)
+  const MUSIC_START_SECOND = 30;
+  function formatTime(sec) {
+    if (isNaN(sec)) return '0:00';
+    const m = Math.floor(sec / 60);
+    const s = Math.floor(sec % 60);
+    return m + ':' + String(s).padStart(2, '0');
+  }
+  function updatePlayerUI() {
+    const playing = !bgMusic.paused;
+    // Icons
+    iconPlay.style.display = playing ? 'none' : '';
+    iconPause.style.display = playing ? '' : 'none';
+    // Vinyl spin
+    vinyl.classList.toggle('spinning', playing);
+    // Equalizer
+    eqBars.classList.toggle('paused', !playing);
+    // Progress
+    if (bgMusic.duration) {
+      const pct = (bgMusic.currentTime / bgMusic.duration) * 100;
+      progressFill.style.width = pct + '%';
+      timeCurrent.textContent = formatTime(bgMusic.currentTime);
+      timeTotal.textContent = formatTime(bgMusic.duration);
     }
   }
   musicToggle.addEventListener('click', () => {
+  // Update progress bar smoothly
+  bgMusic.addEventListener('timeupdate', updatePlayerUI);
+  bgMusic.addEventListener('loadedmetadata', () => {
+    timeTotal.textContent = formatTime(bgMusic.duration);
+  });
+  bgMusic.addEventListener('play', updatePlayerUI);
+  bgMusic.addEventListener('pause', updatePlayerUI);
+  // Click vinyl to play/pause
+  vinylWrap.addEventListener('click', () => {
     if (bgMusic.paused) {
       bgMusic.volume = 0.6;
       bgMusic.play().catch(e => console.log("User interaction needed for audio"));
+      bgMusic.volume = 0.3;
+      bgMusic.play().catch(e => console.log('User interaction needed for audio'));
     } else {
       bgMusic.pause();
     }
@@ -378,9 +578,18 @@
   });
   bgMusic.addEventListener('play', updateMusicIcon);
   bgMusic.addEventListener('pause', updateMusicIcon);
+  // Click progress bar to seek
+  progressBar.addEventListener('click', (e) => {
+    if (!bgMusic.duration) return;
+    const rect = progressBar.getBoundingClientRect();
+    const pct = (e.clientX - rect.left) / rect.width;
+    bgMusic.currentTime = pct * bgMusic.duration;
+  });
   function tryPlayMusic() {
     bgMusic.volume = 0.3;
     bgMusic.play().then(() => updateMusicIcon()).catch(e => console.log("User interaction needed for audio"));
+    bgMusic.currentTime = MUSIC_START_SECOND;
+    bgMusic.play().then(() => updatePlayerUI()).catch(e => console.log('User interaction needed for audio'));
   }
   // ---------- Scene 1 -> Scene 2 ----------
   const sceneDoor = document.getElementById('scene-door');
