@@ -261,55 +261,103 @@
 <audio id="bgMusic" loop src="monokrom.mp3"></audio>
 
 <script>
-  // Setup drifters
+  // ---------- Drifting decorative birthday elements ----------
   const driftContainer = document.getElementById('driftKeys');
-  for (let i = 0; i < 10; i++) {
+  const elements = ['🎈', '🎂', '💖', '🎁', '✨']; // Daftar elemen yang melayang
+  
+  for (let i = 0; i < 15; i++) { // Menambah jumlah elemen agar lebih ramai
     const k = document.createElement('div');
-    k.className = 'drift-key'; k.textContent = '🔑';
-    k.style.left = (Math.random() * 96) + 'vw'; k.style.top = (Math.random() * 90) + 'vh';
-    k.style.animationDuration = (5 + Math.random() * 4) + 's';
+    k.className = 'drift-key';
+    // Pilih elemen secara acak
+    k.textContent = elements[Math.floor(Math.random() * elements.length)];
+    k.style.left = (Math.random() * 100) + 'vw';
+    k.style.top = (Math.random() * 100) + 'vh';
+    // Durasi dan delay acak untuk kesan natural
+    k.style.animationDuration = (8 + Math.random() * 10) + 's';
+    k.style.animationDelay = (-Math.random() * 10) + 's';
+    k.style.fontSize = (16 + Math.random() * 20) + 'px';
     driftContainer.appendChild(k);
   }
 
+  // ---------- Confetti burst ----------
   function burstConfetti(count) {
-    const colors = ['#FFB627', '#FF5A36', '#0E7C7B', '#D9A441'];
+    const colors = ['#FFB627', '#FF5A36', '#0E7C7B', '#D9A441', '#FFF6E5'];
     for (let i = 0; i < count; i++) {
       const piece = document.createElement('div');
       piece.className = 'confetti-piece';
+      const size = 6 + Math.random() * 8;
+      piece.style.width = size + 'px';
+      piece.style.height = (size * 0.4) + 'px';
       piece.style.left = (Math.random() * 100) + 'vw';
       piece.style.background = colors[Math.floor(Math.random() * colors.length)];
       piece.style.animationDuration = (2.5 + Math.random() * 2) + 's';
+      piece.style.animationDelay = (Math.random() * 0.6) + 's';
       document.body.appendChild(piece);
-      setTimeout(() => piece.remove(), 5000);
+      setTimeout(() => piece.remove(), 5200);
     }
   }
 
+  // ---------- Music Handling ----------
   const bgMusic = document.getElementById('bgMusic');
-  let isPlaying = false;
-  document.getElementById('musicNote').addEventListener('click', () => {
-    isPlaying ? bgMusic.pause() : bgMusic.play();
-    isPlaying = !isPlaying;
-  });
-
-  const keyBtn = document.getElementById('keyBtn');
-  keyBtn.addEventListener('click', () => {
-    document.getElementById('doorFrame').classList.add('open');
-    setTimeout(() => { burstConfetti(90); document.getElementById('scene-door').classList.add('hidden'); }, 500);
-    setTimeout(() => { document.getElementById('scene-door').style.display = 'none'; document.getElementById('scene-badge').classList.add('visible'); }, 850);
-  });
-
-  const flagsContainer = document.getElementById('flags');
-  for (let i = 0; i < 21; i++) {
-    const f = document.createElement('div'); f.className = 'flag';
-    flagsContainer.appendChild(f);
+  const musicNote = document.getElementById('musicNote');
+  function tryPlayMusic() {
+    bgMusic.volume = 0.6;
+    bgMusic.play().catch(e => console.log("User interaction needed for audio"));
   }
 
-  document.getElementById('pullBtn').addEventListener('click', (e) => {
+  // ---------- Scene 1 -> Scene 2 ----------
+  const sceneDoor = document.getElementById('scene-door');
+  const sceneBadge = document.getElementById('scene-badge');
+  const doorFrame = document.getElementById('doorFrame');
+  const keyBtn = document.getElementById('keyBtn');
+  let opened = false;
+
+  keyBtn.addEventListener('click', () => {
+    if (opened) return;
+    opened = true;
+    doorFrame.classList.add('open');
+    setTimeout(() => {
+      burstConfetti(90);
+      sceneDoor.classList.add('hidden');
+    }, 500);
+    setTimeout(() => {
+      sceneBadge.classList.add('visible');
+    }, 850);
+    tryPlayMusic();
+  });
+
+  // ---------- 21 flags ----------
+  const flagsContainer = document.getElementById('flags');
+  const flagColors = ['#FFB627', '#FF5A36', '#0E7C7B'];
+  const FLAG_COUNT = 21;
+  for (let i = 0; i < FLAG_COUNT; i++) {
+    const flag = document.createElement('div');
+    flag.className = 'flag';
+    flag.dataset.color = flagColors[i % flagColors.length];
+    flagsContainer.appendChild(flag);
+  }
+
+  // ---------- Pull string action ----------
+  const pullBtn = document.getElementById('pullBtn');
+  const noteEl = document.getElementById('note');
+  let pulled = false;
+
+  pullBtn.addEventListener('click', () => {
+    if (pulled) return;
+    pulled = true;
+    const flags = document.querySelectorAll('.flag');
+    flags.forEach((f, idx) => {
+      setTimeout(() => {
+        f.style.background = f.dataset.color;
+        f.classList.add('lit');
+      }, idx * 45);
+    });
     burstConfetti(140);
-    document.querySelectorAll('.flag').forEach((f, i) => setTimeout(() => f.classList.add('lit'), i * 45));
-    e.target.disabled = true;
-    e.target.textContent = 'Wishes sent to the sky ☁️';
-    setTimeout(() => document.getElementById('note').classList.add('revealed'), 700);
+    pullBtn.disabled = true;
+    pullBtn.textContent = 'Your wishes are sent to the sky ☁️';
+    setTimeout(() => {
+      noteEl.classList.add('revealed');
+    }, 700);
   });
 </script>
 </body>
