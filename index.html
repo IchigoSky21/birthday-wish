@@ -393,8 +393,8 @@
       <div class="rays"></div>
       <div id="driftKeys"></div>
       <div id="scene-door">
-        <p class="eyebrow">HAPPY 21ST BIRTHDAY</p>
-        <h1 class="headline">Gracie has the<br/><em>key</em> now 🔑</h1>
+        <p class="eyebrow">SURPRISE GIFT</p>
+        <h1 class="headline">Hey, What's<br/><em>inside</em> ? 🔑</h1>
         <div class="door-frame" id="doorFrame">
           <div class="door-panel door-left"></div>
           <div class="door-panel door-right"></div>
@@ -499,8 +499,7 @@
   const timeCurrent = document.getElementById('timeCurrent');
   const timeTotal = document.getElementById('timeTotal');
   const eqBars = document.getElementById('eqBars');
-  // ★ Set lagu mulai dari detik ke-30 (ubah angka ini sesuai keinginan)
-  const MUSIC_START_SECOND = 30;
+  const MUSIC_START_SECOND = 25;
   function formatTime(sec) {
     if (isNaN(sec)) return '0:00';
     const m = Math.floor(sec / 60);
@@ -534,7 +533,7 @@
   // Click vinyl to play/pause
   vinylWrap.addEventListener('click', () => {
     if (bgMusic.paused) {
-      bgMusic.volume = 0.3;
+      bgMusic.volume = 0.2;
       bgMusic.play().catch(e => console.log('User interaction needed for audio'));
     } else {
       bgMusic.pause();
@@ -548,7 +547,7 @@
     bgMusic.currentTime = pct * bgMusic.duration;
   });
   function tryPlayMusic() {
-    bgMusic.volume = 0.3;
+    bgMusic.volume = 0.2;
     bgMusic.currentTime = MUSIC_START_SECOND;
     bgMusic.play().then(() => updatePlayerUI()).catch(e => console.log('User interaction needed for audio'));
   }
