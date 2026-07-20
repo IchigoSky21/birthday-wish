@@ -250,9 +250,6 @@
   .tape { position: absolute; top: -16px; left: 50%; transform: translateX(-50%) rotate(-3deg); width: 90px; height: 30px; background: rgba(255,178,39,0.55); border: 1px solid rgba(255,178,39,0.7); }
   .note p { margin: 0 0 12px; line-height: 1.6; font-size: 1rem; }
   .note .signoff { font-family: 'Fredoka', sans-serif; font-weight: 600; color: var(--poppy); text-align: center; margin-top: 16px; }
-  /* ---------- Music Toggle Button ---------- */
-  .music-toggle {
-    width: 48px; height: 48px;
   /* ---------- Mini Music Player ---------- */
   .mini-player {
     display: flex;
@@ -277,8 +274,6 @@
   .vinyl {
     width: 52px; height: 52px;
     border-radius: 50%;
-    border: 2px solid rgba(255,246,229,0.25);
-    background: rgba(255,246,229,0.08);
     background:
       radial-gradient(circle at 50% 50%, var(--ink) 8px, transparent 8px),
       radial-gradient(circle at 50% 50%, var(--brass-light) 10px, transparent 10px),
@@ -299,15 +294,7 @@
     background: rgba(0,0,0,0);
     transition: background 0.2s ease;
     cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    margin: 22px 0 30px;
-    transition: background 0.3s ease, border-color 0.3s ease, transform 0.15s ease;
-    backdrop-filter: blur(4px);
   }
-  .music-toggle:hover {
-    background: rgba(255,182,39,0.18);
-    border-color: var(--marigold);
-    transform: scale(1.1);
   .vinyl-wrap:hover .vinyl-overlay { background: rgba(0,0,0,0.35); }
   .vinyl-overlay svg {
     width: 20px; height: 20px;
@@ -316,11 +303,6 @@
     transition: opacity 0.2s ease;
     filter: drop-shadow(0 1px 3px rgba(0,0,0,0.5));
   }
-  .music-toggle:active { transform: scale(0.95); }
-  .music-toggle svg { width: 22px; height: 22px; fill: var(--cream); opacity: 0.7; transition: opacity 0.3s ease; }
-  .music-toggle:hover svg { opacity: 1; }
-  .music-toggle.playing { border-color: var(--marigold); background: rgba(255,182,39,0.15); }
-  .music-toggle.playing svg { opacity: 1; }
   .vinyl-wrap:hover .vinyl-overlay svg { opacity: 1; }
   /* Song info & progress */
   .player-info {
@@ -438,10 +420,6 @@
             <p>I hope every day is filled with amazing things for you! #HBD #KICAU</p>
             <p class="signoff">Happy birthday, Gracie! 🎂💛</p>
           </div>
-          <button class="music-toggle" id="musicToggle" aria-label="Play or pause music" title="Monokrom — Tulus">
-            <svg id="iconPlay" viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21"/></svg>
-            <svg id="iconPause" viewBox="0 0 24 24" style="display:none"><rect x="5" y="3" width="4" height="18" rx="1"/><rect x="15" y="3" width="4" height="18" rx="1"/></svg>
-          </button>
           <div class="mini-player" id="miniPlayer">
             <div class="vinyl-wrap" id="vinylWrap">
               <div class="vinyl" id="vinyl"></div>
@@ -512,20 +490,10 @@
   }
   // ---------- Music Handling ----------
   const bgMusic = document.getElementById('bgMusic');
-  const musicToggle = document.getElementById('musicToggle');
   const vinyl = document.getElementById('vinyl');
   const vinylWrap = document.getElementById('vinylWrap');
   const iconPlay = document.getElementById('iconPlay');
   const iconPause = document.getElementById('iconPause');
-  function updateMusicIcon() {
-    if (bgMusic.paused) {
-      iconPlay.style.display = '';
-      iconPause.style.display = 'none';
-      musicToggle.classList.remove('playing');
-    } else {
-      iconPlay.style.display = 'none';
-      iconPause.style.display = '';
-      musicToggle.classList.add('playing');
   const progressFill = document.getElementById('progressFill');
   const progressBar = document.getElementById('progressBar');
   const timeCurrent = document.getElementById('timeCurrent');
@@ -556,7 +524,6 @@
       timeTotal.textContent = formatTime(bgMusic.duration);
     }
   }
-  musicToggle.addEventListener('click', () => {
   // Update progress bar smoothly
   bgMusic.addEventListener('timeupdate', updatePlayerUI);
   bgMusic.addEventListener('loadedmetadata', () => {
@@ -567,17 +534,12 @@
   // Click vinyl to play/pause
   vinylWrap.addEventListener('click', () => {
     if (bgMusic.paused) {
-      bgMusic.volume = 0.6;
-      bgMusic.play().catch(e => console.log("User interaction needed for audio"));
       bgMusic.volume = 0.3;
       bgMusic.play().catch(e => console.log('User interaction needed for audio'));
     } else {
       bgMusic.pause();
     }
-    updateMusicIcon();
   });
-  bgMusic.addEventListener('play', updateMusicIcon);
-  bgMusic.addEventListener('pause', updateMusicIcon);
   // Click progress bar to seek
   progressBar.addEventListener('click', (e) => {
     if (!bgMusic.duration) return;
@@ -587,7 +549,6 @@
   });
   function tryPlayMusic() {
     bgMusic.volume = 0.3;
-    bgMusic.play().then(() => updateMusicIcon()).catch(e => console.log("User interaction needed for audio"));
     bgMusic.currentTime = MUSIC_START_SECOND;
     bgMusic.play().then(() => updatePlayerUI()).catch(e => console.log('User interaction needed for audio'));
   }
