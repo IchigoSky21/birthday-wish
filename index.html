@@ -18,7 +18,6 @@
     --brass: #D9A441;
     --brass-light: #F2CB7B;
   }
-
   * { box-sizing: border-box; }
   html, body {
     margin: 0; padding: 0; width: 100%; height: 100%;
@@ -26,26 +25,26 @@
     background: var(--teal-deep);
     color: var(--cream);
   }
-
   .wrapper {
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
       overflow-x: hidden;
       overflow-y: auto;
   }
-
   .stage {
     position: relative;
     width: 100%;
     min-height: 100vh;
-    display: flex; align-items: center; justify-content: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     background:
       repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 46px),
       radial-gradient(ellipse at 50% 42%, var(--teal) 0%, var(--teal-deep) 62%);
     background-attachment: fixed;
     padding: 20px 0;
   }
-
   .rays {
     position: fixed;
     top: 50%; left: 50%;
@@ -60,7 +59,6 @@
     pointer-events: none;
   }
   @keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
-
   .drift-key {
     position: fixed;
     font-size: 20px;
@@ -73,14 +71,18 @@
     50%  { transform: translateY(-40px) rotate(8deg); }
     100% { transform: translateY(0) rotate(-8deg); }
   }
-
+  /* ---------- Scene Door ---------- */
   #scene-door {
-    position: relative; z-index: 2; text-align: center;
+    position: relative; z-index: 2;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     transition: opacity 0.6s ease, transform 0.6s ease;
     width: 100%;
   }
-  #scene-door.hidden { opacity: 0; transform: scale(0.9); pointer-events: none; }
-
+  #scene-door.hidden { opacity: 0; transform: scale(0.9); pointer-events: none; position: absolute; }
   .eyebrow {
     font-family: 'Fredoka', sans-serif;
     font-weight: 600;
@@ -88,6 +90,7 @@
     letter-spacing: 0.14em;
     color: var(--marigold);
     margin: 0 0 6px;
+    text-align: center;
   }
   .headline {
     font-family: 'Fredoka', sans-serif;
@@ -96,9 +99,9 @@
     margin: 0 0 34px;
     line-height: 1.08;
     color: var(--cream);
+    text-align: center;
   }
   .headline em { font-style: normal; color: var(--marigold); }
-
   .door-frame {
     position: relative;
     width: 260px; height: 300px;
@@ -123,7 +126,6 @@
   .door-right { right: 0; transform-origin: right center; }
   .door-frame.open .door-left  { transform: translateX(-120%) rotate(-6deg); }
   .door-frame.open .door-right { transform: translateX(120%) rotate(6deg); }
-
   .keyhole {
     position: absolute;
     top: 50%; left: 50%;
@@ -142,7 +144,6 @@
     transform: translateX(-50%);
     clip-path: polygon(20% 0, 80% 0, 100% 100%, 0 100%);
   }
-
   .key {
     position: absolute;
     top: 50%; left: 50%;
@@ -163,13 +164,19 @@
     transform: translate(-50%, -60%) translateY(96px) rotate(90deg) scale(0.7);
     opacity: 0;
   }
-
-  .hint { margin-top: 20px; font-size: 0.85rem; color: var(--brass-light); }
-
+  .hint {
+    margin-top: 20px;
+    font-size: 0.85rem;
+    color: var(--brass-light);
+    text-align: center;
+  }
+  /* ---------- Scene Badge ---------- */
   #scene-badge {
     position: relative; z-index: 3;
     display: none;
-    align-items: center; justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     opacity: 0;
     transition: opacity 0.7s ease;
     padding: 24px;
@@ -177,11 +184,16 @@
   }
   #scene-badge.visible { display: flex; animation: fadeInBadge 0.7s ease forwards; }
   @keyframes fadeInBadge { to { opacity: 1; } }
-
-  .badge-col { text-align: center; max-width: 460px; width: 100%; }
-  .badge-eyebrow { font-family: 'Fredoka', sans-serif; font-weight: 600; letter-spacing: 0.12em; color: var(--marigold); font-size: 0.85rem; margin: 0 0 4px; }
-  .badge-title { font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: clamp(1.5rem, 4.6vw, 2.1rem); margin: 0 0 22px; color: var(--cream); }
-
+  .badge-col {
+    text-align: center;
+    max-width: 460px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .badge-eyebrow { font-family: 'Fredoka', sans-serif; font-weight: 600; letter-spacing: 0.12em; color: var(--marigold); font-size: 0.85rem; margin: 0 0 4px; text-align: center; }
+  .badge-title { font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: clamp(1.5rem, 4.6vw, 2.1rem); margin: 0 0 22px; color: var(--cream); text-align: center; }
   .medal {
     position: relative; width: 168px; height: 168px; margin: 0 auto 8px; border-radius: 50%;
     background: radial-gradient(circle at 35% 30%, var(--brass-light), var(--brass) 65%, #B9822F 100%);
@@ -190,37 +202,46 @@
   }
   .medal-inner { width: 128px; height: 128px; border-radius: 50%; background: var(--poppy); display: flex; align-items: center; justify-content: center; box-shadow: inset 0 4px 10px rgba(0,0,0,0.25); }
   .medal-num { font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 3rem; color: var(--cream); }
-
   .flags { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; max-width: 320px; margin: 84px auto 26px; position: relative; min-height: 16px; }
   .flag { width: 12px; height: 14px; background: #4a3350; clip-path: polygon(0 0, 100% 0, 50% 100%); transition: background 0.35s ease, transform 0.35s ease; }
   .flag.lit { transform: translateY(2px); filter: drop-shadow(0 2px 4px rgba(255,255,255,0.4)); }
-
   .pull-btn { font-family: 'Fredoka', sans-serif; font-weight: 600; font-size: 0.95rem; color: var(--ink); background: var(--marigold); border: none; padding: 13px 26px; border-radius: 999px; cursor: pointer; box-shadow: 0 6px 0 rgba(0,0,0,0.2); transition: transform 0.12s ease; margin-top: 20px; }
   .pull-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 rgba(0,0,0,0.2); }
   .pull-btn:disabled { opacity: 0.8; background: var(--teal); color: var(--cream); cursor: default; }
-
-  .note { position: relative; background: var(--cream); color: var(--ink); text-align: left; padding: 30px 26px 24px; margin: 30px auto 0; max-width: 420px; border-radius: 3px 14px 14px 14px; transform: rotate(-1.4deg); box-shadow: 0 16px 30px rgba(0,0,0,0.3); max-height: 0; opacity: 0; overflow: hidden; transition: max-height 1s ease, opacity 0.8s ease, transform 0.8s ease; }
+  .note {
+    position: relative;
+    background: var(--cream);
+    color: var(--ink);
+    text-align: left;
+    padding: 30px 26px 24px;
+    margin: 30px auto 0;
+    max-width: 420px;
+    width: 100%;
+    border-radius: 3px 14px 14px 14px;
+    transform: rotate(-1.4deg);
+    box-shadow: 0 16px 30px rgba(0,0,0,0.3);
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 1s ease, opacity 0.8s ease, transform 0.8s ease;
+  }
   .note.revealed { max-height: 1000px; opacity: 1; transform: rotate(-1.4deg) translateY(0); margin-bottom: 40px; }
   .tape { position: absolute; top: -16px; left: 50%; transform: translateX(-50%) rotate(-3deg); width: 90px; height: 30px; background: rgba(255,178,39,0.55); border: 1px solid rgba(255,178,39,0.7); }
   .note p { margin: 0 0 12px; line-height: 1.6; font-size: 1rem; }
   .note .signoff { font-family: 'Fredoka', sans-serif; font-weight: 600; color: var(--poppy); text-align: center; margin-top: 16px; }
-
-  .music-note { font-size: 0.75rem; color: rgba(255,246,229,0.6); margin: 18px 0 30px; cursor: pointer; }
+  .music-note { font-size: 0.75rem; color: rgba(255,246,229,0.6); margin: 18px 0 30px; cursor: pointer; text-align: center; }
   .confetti-piece { position: fixed; top: -20px; z-index: 10; pointer-events: none; animation: confettiFall linear forwards; }
   @keyframes confettiFall { to { transform: translateY(105vh) rotate(540deg); opacity: 0; } }
 </style>
 </head>
 <body>
-
 <div class="wrapper">
     <div class="stage">
       <div class="rays"></div>
       <div id="driftKeys"></div>
-
       <div id="scene-door">
         <p class="eyebrow">HAPPY 21ST BIRTHDAY</p>
         <h1 class="headline">Gracie has the<br/><em>key</em> now 🔑</h1>
-
         <div class="door-frame" id="doorFrame">
           <div class="key" id="keyBtn"><svg viewBox="0 0 64 64"><circle cx="18" cy="18" r="13" fill="none" stroke="#D9A441" stroke-width="7"/><rect x="16" y="28" width="6" height="30" fill="#D9A441"/><rect x="16" y="46" width="14" height="6" fill="#D9A441"/><rect x="16" y="54" width="10" height="5" fill="#D9A441"/></svg></div>
           <div class="door-panel door-left"></div>
@@ -229,20 +250,15 @@
         </div>
         <p class="hint">Click the key to unlock ✨</p>
       </div>
-
       <div id="scene-badge">
         <div class="badge-col">
           <p class="badge-eyebrow">THE KEY AGE</p>
           <h2 class="badge-title">For Gracie 💛</h2>
-
           <div class="medal">
             <div class="medal-inner"><span class="medal-num">21</span></div>
           </div>
-
           <div class="flags" id="flags"></div>
-
           <button class="pull-btn" id="pullBtn">Click for wishes and hopes 🎊</button>
-
           <div class="note" id="note">
             <div class="tape"></div>
             <p>그레이시, 21번째 생일 축하해! 🎉</p>
@@ -251,34 +267,28 @@
             <p>I hope every day is filled with amazing things for you! #HBD #KICAU</p>
             <p class="signoff">Happy birthday, Gracie! 🔑💛</p>
           </div>
-
           <p class="music-note" id="musicNote">🎵 Monokrom — Tulus (Click to play/pause)</p>
         </div>
       </div>
     </div>
 </div>
-
 <audio id="bgMusic" loop src="monokrom.mp3"></audio>
-
 <script>
   // ---------- Drifting decorative birthday elements ----------
   const driftContainer = document.getElementById('driftKeys');
-  const elements = ['🎈', '🎂', '💖', '🎁', '✨']; // Daftar elemen yang melayang
+  const elements = ['🎈', '🎂', '💖', '🎁', '✨'];
   
-  for (let i = 0; i < 15; i++) { // Menambah jumlah elemen agar lebih ramai
+  for (let i = 0; i < 15; i++) {
     const k = document.createElement('div');
     k.className = 'drift-key';
-    // Pilih elemen secara acak
     k.textContent = elements[Math.floor(Math.random() * elements.length)];
     k.style.left = (Math.random() * 100) + 'vw';
     k.style.top = (Math.random() * 100) + 'vh';
-    // Durasi dan delay acak untuk kesan natural
     k.style.animationDuration = (8 + Math.random() * 10) + 's';
     k.style.animationDelay = (-Math.random() * 10) + 's';
     k.style.fontSize = (16 + Math.random() * 20) + 'px';
     driftContainer.appendChild(k);
   }
-
   // ---------- Confetti burst ----------
   function burstConfetti(count) {
     const colors = ['#FFB627', '#FF5A36', '#0E7C7B', '#D9A441', '#FFF6E5'];
@@ -296,22 +306,28 @@
       setTimeout(() => piece.remove(), 5200);
     }
   }
-
   // ---------- Music Handling ----------
   const bgMusic = document.getElementById('bgMusic');
   const musicNote = document.getElementById('musicNote');
+  
+  musicNote.addEventListener('click', () => {
+    if (bgMusic.paused) {
+      bgMusic.volume = 0.6;
+      bgMusic.play().catch(e => console.log("User interaction needed for audio"));
+    } else {
+      bgMusic.pause();
+    }
+  });
   function tryPlayMusic() {
     bgMusic.volume = 0.6;
     bgMusic.play().catch(e => console.log("User interaction needed for audio"));
   }
-
   // ---------- Scene 1 -> Scene 2 ----------
   const sceneDoor = document.getElementById('scene-door');
   const sceneBadge = document.getElementById('scene-badge');
   const doorFrame = document.getElementById('doorFrame');
   const keyBtn = document.getElementById('keyBtn');
   let opened = false;
-
   keyBtn.addEventListener('click', () => {
     if (opened) return;
     opened = true;
@@ -325,7 +341,6 @@
     }, 850);
     tryPlayMusic();
   });
-
   // ---------- 21 flags ----------
   const flagsContainer = document.getElementById('flags');
   const flagColors = ['#FFB627', '#FF5A36', '#0E7C7B'];
@@ -336,12 +351,10 @@
     flag.dataset.color = flagColors[i % flagColors.length];
     flagsContainer.appendChild(flag);
   }
-
   // ---------- Pull string action ----------
   const pullBtn = document.getElementById('pullBtn');
   const noteEl = document.getElementById('note');
   let pulled = false;
-
   pullBtn.addEventListener('click', () => {
     if (pulled) return;
     pulled = true;
